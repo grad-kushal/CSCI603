@@ -1,3 +1,15 @@
+"""
+Filename:       sort.py
+Description:    Assignment for Lab 5 of CSCI 603
+
+                This module contains the method to sort a list of words
+                lexicographically.
+
+Language:       Python 3
+Author:         Arjun Kozhissery    (ak8913@rit.edu)
+                Kushal Kale         (ksk7657@rit.edu)
+"""
+
 
 def merge_sort(word_list: list[str]) -> list[str]:
     """

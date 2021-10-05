@@ -1,18 +1,35 @@
-from bsearch import binary_search
+"""
+Filename:       autocomplete.py
+Description:    Assignment for Lab 5 of CSCI 603
+
+                This program prompts the user to enter a prefix and suggests
+                auto-complete words starting with the prefix.
+
+Language:       Python 3
+Author:         Arjun Kozhissery    (ak8913@rit.edu)
+                Kushal Kale         (ksk7657@rit.edu)
+"""
+
+import sys
+
+from bsearch import index_of_first
 from sort import merge_sort
 
 
-previously_search_results = []  # list of auto-complete suggestions
-all_words = []  # list of the words to look up suggestions from
-
-
-def get_prefix_from_user() -> str:
+def get_filename_from_args() -> str:
     """
-    Read q prefix as input from the user.
+    Parse the filename from the command line args.
 
-    :return:            prefix read from the user
+    :return:        filename from args
     """
-    pass
+
+    args = sys.argv
+    if len(args) < 2:
+        print("Error: Filename not provided")
+        print("Usage: python3 auto_complete filename")
+        exit(1)
+
+    return args[1]
 
 
 def read_words_from_file(filepath: str) -> list[str]:
@@ -22,25 +39,94 @@ def read_words_from_file(filepath: str) -> list[str]:
     :param filepath:    path of the file to read from
     :return:           list of words read from the file
     """
-    pass
+
+    with open(filepath) as f:
+
+        # strip '\n' from the end of each word
+        words = [word.strip().lower() for word in f.readlines()]
+
+    return words
 
 
-def get_autocomplete_suggestions(prefix: str) -> list[str]:
+def get_autocomplete_suggestions(prefix: str, 
+                                 sorted_words: list[str]) -> list[str]:
     """
     Using the prefix entered, generate a list of auto-complete word suggestions.
 
     :param prefix:          word prefix
+    :param sorted_words:    list of sorted words
     :return:                list of auto-complete suggestions
     """
-    pass
+
+    start_index = index_of_first(sorted_words, prefix)
+
+    if start_index == -1:
+
+        # no words with the prefix exists
+        return []
+
+    # index used to iterate over the list of sorted words
+    current_index = start_index
+    suggestions = []
+
+    # create a list of all words starting with the prefix
+    while current_index < len(sorted_words) \
+            and sorted_words[current_index].startswith(prefix):
+        suggestions.append(sorted_words[current_index])
+        current_index += 1
+
+    return suggestions
 
 
-def run() -> None:
+def run(sorted_words) -> None:
     """
-    Read prefixes from the user and suggest auto-complete words.
+    Read q prefix as input from the user and display auto-complete
+    suggestions.
 
-    :return:          None
+    :param sorted_words:    list of sorted words
+    :return:                prefix read from the user
     """
+
+    print("Welcome to the autocorrect program!\n")
+
+    # read prefix from user
+    prefix = input("Enter the prefix: ")
+
+    # list of auto-complete suggestions; default is the list of sorted words
+    previous_results = sorted_words
+
+    # index of the list containing previous search results
+    index = 0
+
+    while prefix != "<QUIT>":
+
+        if prefix == "" and previous_results:
+            print(previous_results[index])
+            index = (index + 1) % len(previous_results)
+
+        if prefix:
+
+            # get the auto-complete suggestions
+            suggestions = get_autocomplete_suggestions(prefix, sorted_words)
+
+            if suggestions:
+
+                # print the first suggestion
+                print(suggestions[0])
+
+            else:
+
+                print("**No suggestions**")
+
+            previous_results = suggestions
+
+            # print from the second suggestion onwards if empty prefix is
+            # entered
+            index = 1
+
+        prefix = input("Enter the prefix: ")
+
+    print("Goodbye!")
 
 
 def main() -> None:
@@ -50,7 +136,23 @@ def main() -> None:
 
     :return:        None
     """
-    pass
+
+    # read the filename from args
+    filename = get_filename_from_args()
+
+    # read the list of unsorted words
+    unsorted_words = read_words_from_file(filename)
+
+    # sort the words
+    sorted_words = merge_sort(unsorted_words)
+
+    # verification of sort
+    unsorted_words.sort()
+    for i in range(len(sorted_words)):
+        assert sorted_words[i] == unsorted_words[i]
+
+    # run the autocorrect suggestion program
+    run(sorted_words)
 
 
 if __name__ == '__main__':
