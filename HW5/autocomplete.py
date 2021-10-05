@@ -1,5 +1,5 @@
-from bsearch import search
-from sort import sort
+from bsearch import binary_search
+from sort import merge_sort
 
 
 previously_search_results = []  # list of auto-complete suggestions

@@ -9,7 +9,7 @@ def binary_search(word_list: list[str], word: str) -> int:
                             else -1 is returned
     """
     if len(word_list) == 0:
-        return False
+        return -1
     else:
         center = len(word_list) // 2
         if word_list[center] == word:
