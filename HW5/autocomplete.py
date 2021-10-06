@@ -40,12 +40,16 @@ def read_words_from_file(filepath: str) -> list[str]:
     :return:           list of words read from the file
     """
 
-    with open(filepath) as f:
+    try:
+        with open(filepath) as f:
 
-        # strip '\n' from the end of each word
-        words = [word.strip().lower() for word in f.readlines()]
+            # strip '\n' from the end of each word
+            words = [word.strip().lower() for word in f.readlines()]
 
-    return words
+        return words
+    except FileNotFoundError as _:
+        print("Filename %s was not found" % filepath)
+        exit(1)
 
 
 def get_autocomplete_suggestions(prefix: str, 
@@ -87,7 +91,7 @@ def run(sorted_words) -> None:
     :return:                prefix read from the user
     """
 
-    print("Welcome to the autocorrect program!\n")
+    print("Welcome to the auto-complete program!\n")
 
     # read prefix from user
     prefix = input("Enter the prefix: ")
@@ -107,7 +111,9 @@ def run(sorted_words) -> None:
         if prefix:
 
             # get the auto-complete suggestions
-            suggestions = get_autocomplete_suggestions(prefix, sorted_words)
+            suggestions = get_autocomplete_suggestions(
+                prefix.lower(), sorted_words
+            )
 
             if suggestions:
 
@@ -115,15 +121,17 @@ def run(sorted_words) -> None:
                 print(suggestions[0])
 
             else:
-
                 print("**No suggestions**")
 
+            # store the suggestions for this prefix
             previous_results = suggestions
 
-            # print from the second suggestion onwards if empty prefix is
-            # entered
-            index = 1
+            if previous_results:
 
+                # cycle through suggestions if empty prefix is entered next
+                index = (index + 1) % len(previous_results)
+
+        # read the next prefix from user
         prefix = input("Enter the prefix: ")
 
     print("Goodbye!")
@@ -145,6 +153,11 @@ def main() -> None:
 
     # sort the words
     sorted_words = merge_sort(unsorted_words)
+
+    # print the sorted words
+    print("The sorted words are: ")
+    for word in sorted_words:
+        print(word)
 
     # verification of sort
     unsorted_words.sort()
