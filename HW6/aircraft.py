@@ -1,6 +1,6 @@
 """
 Filename:       aircraft.py
-Description:    Assignment for Lab 5 of CSCI 603
+Description:    Assignment for Lab 6 of CSCI 603
 
                 This module contains the implementation of the AiRIT aircraft.
 
@@ -15,9 +15,7 @@ from typing import Optional
 
 
 class Aircraft:
-    """
-    Class to represent an aircraft
-    """
+    """Class to define an aircraft"""
 
     __slots__ = (
         "_pax_with_carry_on",     # stack to store pax with carry-on luggage
@@ -29,6 +27,8 @@ class Aircraft:
     def __init__(self, capacity: int):
         """
         An initializer for this object.
+
+        :@param capacity:       the maximum capacity of the aircraft
         """
         self._pax_with_carry_on = PaxStack()
         self._pax_without_carry_on = PaxStack()
@@ -40,8 +40,8 @@ class Aircraft:
         Board the passenger to this aircraft.
 
         :return:            True if the passenger has successfully boarded the
-                         aircraft. False if the aircraft has reached the maximum
-                         capacity.
+                            aircraft. False if the aircraft has reached
+                            the maximum capacity.
         """
 
         if self.is_full():

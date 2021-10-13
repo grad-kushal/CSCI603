@@ -1,7 +1,6 @@
-# TODO: Change file name
 """
 Filename:       pax_stack.py
-Description:    Assignment for Lab 5 of CSCI 603
+Description:    Assignment for Lab 6 of CSCI 603
 
                 This module contains the implementation of the stack data
                 structure for storing passenger objects.
@@ -20,7 +19,7 @@ class PaxStack:
     Implementation of a stack data structure that stores Passenger objects.
     """
 
-    __slots__ = "_top"
+    __slots__ = "_top"  # passenger at the top of the stack
 
     def __init__(self):
         """

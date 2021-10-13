@@ -7,7 +7,10 @@ class PaxQueue:
     Implementation of a queue data structure that stores Passenger objects.
     """
 
-    __slots__ = "_front", "_back"
+    __slots__ = (
+        "_front",   # passenger at the front of the queue
+        "_back"     # passenger at the back of the queue
+    )
 
     def __init__(self):
         """
@@ -16,7 +19,7 @@ class PaxQueue:
         self._front = None
         self._back = None
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         """
         Checks if this queue is empty.
 
@@ -24,8 +27,7 @@ class PaxQueue:
         """
         return self._back is None
 
-    def enqueue(self, passenger: Passenger):
-
+    def enqueue(self, passenger: Passenger) -> None:
         """
         Adds a passenger to the rear of this queue.
 
@@ -43,7 +45,6 @@ class PaxQueue:
         self._back = node
 
     def dequeue(self) -> Passenger:
-
         """
         Removes and returns the passenger object at the front of this queue.
 

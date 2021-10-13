@@ -1,6 +1,6 @@
 """
 Filename:       lineked_node.py
-Description:    Assignment for Lab 5 of CSCI 603
+Description:    Assignment for Lab 6 of CSCI 603
 
                 This module contains the class to represent the node in a
                 passenger stack of queue that holds a passenger object.
@@ -27,11 +27,3 @@ class LinkedNode:
         """
         self.passenger = passenger
         self.link = link
-
-    def __str__(self) -> str:
-        """
-        String representation of this object.
-        
-        :return:        the string representation of this object
-        """
-        return str(self.passenger)

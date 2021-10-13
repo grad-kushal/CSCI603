@@ -1,14 +1,33 @@
+"""
+Filename:       zone.py
+Description:    Assignment for Lab 6 of CSCI 603
+
+                This module contains the implementation of a boarding zone of a
+                gate.
+
+Language:       Python 3
+Author:         Arjun Kozhissery    (ak8913@rit.edu)
+                Kushal Kale         (ksk7657@rit.edu)
+"""
 from passenger import Passenger
 from pax_queue import PaxQueue
 
 
 class Zone:
+    """Class to represent a boarding zone of a gate."""
 
-    __slots__ = "_zone_id", "_pax_queue", "_current_pax_count"
+    __slots__ = (
+        "_zone_id",             # zone number
+        "_pax_queue",           # passenger queue associated with this zone
+        "_current_pax_count"    # number of passengers currently lined up in
+                                # this zone
+    )
 
     def __init__(self, zone_id: int):
         """
         An initializer for the zone object.
+
+        @param zone_id:         zone number of this zone
         """
         self._zone_id = zone_id
         self._pax_queue = PaxQueue()
