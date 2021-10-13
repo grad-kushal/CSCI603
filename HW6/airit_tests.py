@@ -309,13 +309,132 @@ def test_zone() -> None:
     test_zone_remove_pax()
 
 
+def test_aircraft_is_empty() -> None:
+
+    pax = TEST_PASSENGERS[0]
+    aircraft = Aircraft(5)
+
+    # before boarding
+    assert aircraft.is_empty()
+
+    aircraft.board(pax)
+
+    # after boarding
+    assert not aircraft.is_empty()
+
+
+def test_aircraft_is_full() -> None:
+
+    pax1 = TEST_PASSENGERS[0]
+    pax2 = TEST_PASSENGERS[1]
+    aircraft = Aircraft(2)
+
+    # before boarding
+    assert not aircraft.is_full()
+
+    aircraft.board(pax1)
+    aircraft.board(pax2)
+
+    # after boarding
+    assert aircraft.is_full()
+
+
+def test_aircraft_deplane() -> None:
+
+    aircraft = Aircraft(2)
+
+    assert aircraft.is_empty()
+
+    dp_pax = aircraft.deplane()
+
+    assert dp_pax is None
+
+    pax1 = TEST_PASSENGERS[0]
+    pax2 = TEST_PASSENGERS[1]
+
+    aircraft.board(pax1)
+    aircraft.board(pax2)
+
+    assert aircraft.is_full()
+
+    pax_count = aircraft._current_pax
+    dp_pax = aircraft.deplane()
+
+    assert aircraft._current_pax == pax_count - 1
+    assert dp_pax == TEST_PASSENGERS[1]
+
+    pax_count = aircraft._current_pax
+    dp_pax = aircraft.deplane()
+
+    assert aircraft._current_pax == pax_count - 1
+    assert dp_pax == TEST_PASSENGERS[0]
+
+
+def test_aircraft_disembark() -> None:
+    aircraft = Aircraft(2)
+
+    pax1 = TEST_PASSENGERS[0]
+    pax2 = TEST_PASSENGERS[1]
+
+    aircraft.board(pax1)
+    aircraft.board(pax2)
+
+    # before disembark
+    assert not aircraft.is_empty()
+
+    aircraft.disembark()
+
+    # after disembark
+    assert aircraft.is_empty()
+
+
+def test_aircraft_board() -> None:
+    aircraft = Aircraft(2)
+
+    pax1 = TEST_PASSENGERS[0]
+    pax2 = TEST_PASSENGERS[1]
+    pax3 = TEST_PASSENGERS[2]
+
+    # before board
+    assert aircraft.is_empty()
+
+    pax_count = aircraft._current_pax
+    result = aircraft.board(pax1)
+
+    # after board
+    assert not aircraft.is_empty()
+    assert aircraft._current_pax == pax_count + 1
+    assert aircraft._pax_with_carry_on.peek() == pax1
+    assert result is None
+
+    pax_count = aircraft._current_pax
+    result = aircraft.board(pax2)
+
+    # after 2nd board
+    assert aircraft.is_full()
+    assert aircraft._current_pax == pax_count + 1
+    assert aircraft._pax_without_carry_on.peek() == pax2
+    assert result is None
+
+    pax_count = aircraft._current_pax
+    result = aircraft.board(pax3)
+
+    assert aircraft.is_full()
+    assert aircraft._current_pax == pax_count
+    assert result is False
+
+
 def test_aircraft() -> None:
     """
     Tests the functionalities of the Aircraft class
 
     @return:        None
     """
-    pass
+    test_aircraft_is_empty()
+    test_aircraft_is_full()
+    test_aircraft_deplane()
+    test_aircraft_board()
+    test_aircraft_disembark()
 
 
 def test_passenger_get_zone() -> None:
@@ -374,6 +493,9 @@ def main() -> None:
 
         # test the passenger class
         test_passenger()
+
+        # test the Aircraft class
+        test_aircraft()
 
         print("Passed all tests.")
     except AssertionError as e:
