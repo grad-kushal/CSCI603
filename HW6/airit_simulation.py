@@ -87,7 +87,7 @@ def get_user_input() -> tuple[int, int]:
     """
 
     gate_capacity = get_positive_integer("Input gate capacity: ")
-    aircraft_capacity = get_positive_integer("Input aircraft capacity")
+    aircraft_capacity = get_positive_integer("Input aircraft capacity: ")
 
     return gate_capacity, aircraft_capacity
 
