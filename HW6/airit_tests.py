@@ -318,13 +318,20 @@ def test_aircraft() -> None:
     pass
 
 
+def test_passenger_get_zone() -> None:
+    pax = TEST_PASSENGERS[0]
+    zone = pax.get_zone()
+
+    assert zone == 1
+
+
 def test_passenger() -> None:
     """
     Tests the functionalities of the Passenger class
 
     @return:        None
     """
-    pass
+    test_passenger_get_zone()
 
 
 def test_gate() -> None:
@@ -364,6 +371,9 @@ def main() -> None:
 
         # test the PaxQueue class
         test_pax_queue()
+
+        # test the passenger class
+        test_passenger()
 
         print("Passed all tests.")
     except AssertionError as e:
