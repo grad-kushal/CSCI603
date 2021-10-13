@@ -599,6 +599,11 @@ def test_aircraft_board() -> None:
 
 
 def test_passenger_get_zone() -> None:
+    """
+    Tests the Passenger.get_zone
+
+    @return:        None
+    """
     pax = TEST_PASSENGERS[0]
     zone = pax.get_zone()
 
