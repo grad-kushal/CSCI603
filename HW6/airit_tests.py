@@ -240,19 +240,18 @@ def test_pax_queue_enqueue() -> None:
 
     # before enqueue
     assert queue.is_empty()
-
     queue.enqueue(pax1)
-
     # after enqueue
     assert not queue.is_empty()
-    assert queue._front == queue._back == pax1
+    assert queue._front == queue._back
+    assert queue._front.passenger == pax1
 
     queue.enqueue(pax2)
 
     # after 2nd enqueue
     assert not queue.is_empty()
-    assert queue._back == pax2
-    assert queue._front == pax1
+    assert queue._back.passenger == pax2
+    assert queue._front.passenger == pax1
 
 
 def test_pax_queue_dequeue() -> None:
@@ -277,7 +276,7 @@ def test_pax_queue_dequeue() -> None:
 
     # after dequeue
     assert dq_pax == pax1
-    assert queue._front == pax2
+    assert queue._front.passenger == pax2
 
     dq_pax = queue.dequeue()
 
@@ -362,6 +361,9 @@ def main() -> None:
 
         # test the zone class
         test_zone()
+
+        # test the PaxQueue class
+        test_pax_queue()
 
         print("Passed all tests.")
     except AssertionError as e:
