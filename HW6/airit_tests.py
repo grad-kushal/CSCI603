@@ -9,6 +9,8 @@ Language:       Python 3
 Author:         Arjun Kozhissery    (ak8913@rit.edu)
                 Kushal Kale         (ksk7657@rit.edu)
 """
+import sys
+
 import airit_simulation
 
 from aircraft import Aircraft
@@ -34,6 +36,7 @@ def test_linked_node() -> None:
 
     @return:        None
     """
+
     pax = TEST_PASSENGERS[0]
 
     node = LinkedNode(pax, None)
@@ -47,6 +50,7 @@ def test_pax_stack_is_empty() -> None:
 
     @return:        None
     """
+
     stack = PaxStack()
 
     # before push
@@ -65,6 +69,7 @@ def test_pax_stack_push() -> None:
 
     @return:        None
     """
+
     stack = PaxStack()
 
     # before push
@@ -84,6 +89,7 @@ def test_pax_stack_pop() -> None:
 
     @return:        None
     """
+
     stack = PaxStack()
     assert stack.is_empty()
 
@@ -107,6 +113,7 @@ def test_pax_stack_peek() -> None:
 
     @return:        None
     """
+
     stack = PaxStack()
 
     # before push
@@ -125,6 +132,7 @@ def test_pax_queue_is_empty() -> None:
 
     @return:        None
     """
+
     queue = PaxQueue()
 
     # before enqueue
@@ -143,6 +151,7 @@ def test_zone_add_pax() -> None:
 
     @return:        None
     """
+
     zone = Zone(1)
 
     pax1 = TEST_PASSENGERS[0]
@@ -170,6 +179,7 @@ def test_zone_remove_pax() -> None:
 
     @return:        None
     """
+
     zone = Zone(1)
 
     pax1 = TEST_PASSENGERS[0]
@@ -216,6 +226,115 @@ def test_zone_get_pax_count() -> None:
     assert zone.get_pax_count() == 2
 
 
+def test_gate_is_empty():
+    """
+    Tests the functionalities of the Gate.is_empty method
+
+    @return:            None
+    """
+
+    gate = Gate(2)
+
+    # before adding pax
+    assert gate.is_empty()
+
+    # add a pax
+    gate.add_pax(TEST_PASSENGERS[0])
+
+    # after insertion
+    assert not gate.is_empty()
+
+
+def test_gate_get_current_pax_count():
+    """
+    Tests the functionalities of the Gate.get_current_pax_count method
+
+    @return:            None
+    """
+
+    gate = Gate(4)
+
+    # before adding pax
+    assert gate.is_empty()
+
+    # add pax
+    gate.add_pax(TEST_PASSENGERS[0])
+    gate.add_pax(TEST_PASSENGERS[1])
+    gate.add_pax(TEST_PASSENGERS[2])
+
+    # after adding pax
+    assert gate.get_current_pax_count() == 3
+
+
+def test_gate_add_pax():
+    """
+    Tests the functionalities of the Gate.add_pax method
+
+    @return:        None
+    """
+
+    gate = Gate(3)
+
+    # before adding pax
+    assert gate.is_empty()
+
+    # add pax
+    assert gate.add_pax(TEST_PASSENGERS[0])
+    assert gate.add_pax(TEST_PASSENGERS[1])
+
+    # after adding pax
+    assert gate.get_current_pax_count() == 2
+    assert not gate.is_empty()
+
+    # adding the next pax should return false since the max limit will be
+    # reached.
+    assert not gate.add_pax(TEST_PASSENGERS[2])
+
+    # But this passenger should nonetheless be added to the gate
+    assert gate.get_current_pax_count() == 3
+
+    # subsequent addition should return false
+    assert not gate.add_pax(TEST_PASSENGERS[3])
+
+    # AND this passenger shouldn't be added to the gate
+    assert gate.get_current_pax_count() == 3
+
+
+def test_gate_board():
+    """
+    Tests the functionalities of the Gate.add_pax method
+
+    @return:
+    """
+
+    aircraft = Aircraft(2)
+
+    gate = Gate(4)
+
+    # add pax
+    gate.add_pax(TEST_PASSENGERS[0])
+    gate.add_pax(TEST_PASSENGERS[1])
+    gate.add_pax(TEST_PASSENGERS[2])
+    gate.add_pax(TEST_PASSENGERS[3])
+
+    # board pax to plane
+    gate.board_pax(aircraft)
+
+    # 2 should be boarded, 2 should remain back in the gate
+    assert aircraft.is_full()
+    assert gate.get_current_pax_count() == 2
+
+    # create a new aircraft
+    aircraft = Aircraft(2)
+
+    # board pax
+    gate.board_pax(aircraft)
+
+    # all pax boarded, gate should be empty
+    assert aircraft.is_full()
+    assert gate.is_empty()
+
+
 def test_pax_stack() -> None:
     """
     Tests the functionalities of the PaxStack class
@@ -227,6 +346,41 @@ def test_pax_stack() -> None:
     test_pax_stack_pop()
     test_pax_stack_peek()
 
+
+def test_airit_simulation_get_filename_from_args() -> None:
+    """
+    Test the functionality of the airit_simulation.get_filename_from_args
+
+    @return:    None
+    """
+
+    # mock sys.argv
+    sys.argv = ["module.py", "filename.txt"]
+
+    actual = airit_simulation.get_filename_from_args()
+    expected = "filename.txt"
+
+    assert actual == expected
+
+
+def test_airit_simulation_read_pax_from_file():
+    """
+    Test the functionality of the airit_simulation.read_pax_from_file
+
+    @return:    None
+    """
+
+    filename = "passengers_very_small.txt"
+
+    passengers = airit_simulation.read_pax_from_file(filename)
+
+    # assert the number of objects created
+    assert len(passengers) == 10
+
+    # assert all the objects are of type Passenger
+    for pax in passengers:
+        assert isinstance(pax, Passenger)
+        
 
 def test_pax_queue() -> None:
     """
@@ -275,7 +429,10 @@ def test_gate() -> None:
 
     @return:        None
     """
-    pass
+    test_gate_is_empty()
+    test_gate_get_current_pax_count()
+    test_gate_add_pax()
+    test_gate_board()
 
 
 def test_airit_simulation() -> None:
@@ -284,7 +441,8 @@ def test_airit_simulation() -> None:
 
     @return:        None
     """
-    pass
+    test_airit_simulation_get_filename_from_args()
+    test_airit_simulation_read_pax_from_file()
 
 
 def main() -> None:
@@ -304,10 +462,20 @@ def main() -> None:
         # test the zone class
         test_zone()
 
+        # test the gate class
+        test_gate()
+
+        # test airit_simulation
+        test_airit_simulation()
+
+        print("*" * 80)
         print("Passed all tests.")
+        print("*" * 80)
     except AssertionError as e:
+        print("x" * 80)
         print("Testing failed!")
-        print(repr(e))
+        print("x" * 80)
+        raise e
 
 
 if __name__ == '__main__':
