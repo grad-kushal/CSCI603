@@ -9,6 +9,7 @@ Language:       Python 3
 Author:         Arjun Kozhissery    (ak8913@rit.edu)
                 Kushal Kale         (ksk7657@rit.edu)
 """
+
 import sys
 
 import airit_simulation
@@ -36,7 +37,6 @@ def test_linked_node() -> None:
 
     @return:        None
     """
-
     pax = TEST_PASSENGERS[0]
 
     node = LinkedNode(pax, None)
@@ -50,7 +50,6 @@ def test_pax_stack_is_empty() -> None:
 
     @return:        None
     """
-
     stack = PaxStack()
 
     # before push
@@ -69,7 +68,6 @@ def test_pax_stack_push() -> None:
 
     @return:        None
     """
-
     stack = PaxStack()
 
     # before push
@@ -89,7 +87,6 @@ def test_pax_stack_pop() -> None:
 
     @return:        None
     """
-
     stack = PaxStack()
     assert stack.is_empty()
 
@@ -113,7 +110,6 @@ def test_pax_stack_peek() -> None:
 
     @return:        None
     """
-
     stack = PaxStack()
 
     # before push
@@ -132,7 +128,6 @@ def test_pax_queue_is_empty() -> None:
 
     @return:        None
     """
-
     queue = PaxQueue()
 
     # before enqueue
@@ -151,7 +146,6 @@ def test_zone_add_pax() -> None:
 
     @return:        None
     """
-
     zone = Zone(1)
 
     pax1 = TEST_PASSENGERS[0]
@@ -179,7 +173,6 @@ def test_zone_remove_pax() -> None:
 
     @return:        None
     """
-
     zone = Zone(1)
 
     pax1 = TEST_PASSENGERS[0]
@@ -347,6 +340,65 @@ def test_pax_stack() -> None:
     test_pax_stack_peek()
 
 
+def test_pax_queue_enqueue() -> None:
+    """
+        Test the PaxQueue.enqueue method.
+
+        @return:        None
+    """
+    queue = PaxQueue()
+    pax1 = TEST_PASSENGERS[0]
+    pax2 = TEST_PASSENGERS[1]
+
+    # before enqueue
+    assert queue.is_empty()
+    queue.enqueue(pax1)
+    # after enqueue
+    assert not queue.is_empty()
+    assert queue._front == queue._back
+    assert queue._front.passenger == pax1
+
+    queue.enqueue(pax2)
+
+    # after 2nd enqueue
+    assert not queue.is_empty()
+    assert queue._back.passenger == pax2
+    assert queue._front.passenger == pax1
+
+
+def test_pax_queue_dequeue() -> None:
+    """
+            Test the PaxQueue.enqueue method.
+
+            @return:        None
+    """
+    queue = PaxQueue()
+    pax1 = TEST_PASSENGERS[0]
+    pax2 = TEST_PASSENGERS[1]
+
+    assert queue.is_empty()
+
+    queue.enqueue(pax1)
+    queue.enqueue(pax2)
+
+    # before dequeue
+    assert not queue.is_empty()
+
+    dq_pax = queue.dequeue()
+
+    # after dequeue
+    assert dq_pax == pax1
+    assert queue._front.passenger == pax2
+
+    dq_pax = queue.dequeue()
+
+    # after 2nd dequeue
+    assert dq_pax == pax2
+    assert queue._front is None
+    assert queue._back is None
+    assert queue.is_empty()
+
+
 def test_airit_simulation_get_filename_from_args() -> None:
     """
     Test the functionality of the airit_simulation.get_filename_from_args
@@ -380,7 +432,7 @@ def test_airit_simulation_read_pax_from_file():
     # assert all the objects are of type Passenger
     for pax in passengers:
         assert isinstance(pax, Passenger)
-        
+
 
 def test_pax_queue() -> None:
     """
@@ -389,9 +441,8 @@ def test_pax_queue() -> None:
     @return:        None
     """
     test_pax_queue_is_empty()
-    # TODO: implement these
-    # test_pax_queue_enqueue()
-    # test_pax_queue_dequeue()
+    test_pax_queue_enqueue()
+    test_pax_queue_dequeue()
 
 
 def test_zone() -> None:
@@ -405,13 +456,139 @@ def test_zone() -> None:
     test_zone_remove_pax()
 
 
+def test_aircraft_is_empty() -> None:
+
+    pax = TEST_PASSENGERS[0]
+    aircraft = Aircraft(5)
+
+    # before boarding
+    assert aircraft.is_empty()
+
+    aircraft.board(pax)
+
+    # after boarding
+    assert not aircraft.is_empty()
+
+
+def test_aircraft_is_full() -> None:
+
+    pax1 = TEST_PASSENGERS[0]
+    pax2 = TEST_PASSENGERS[1]
+    aircraft = Aircraft(2)
+
+    # before boarding
+    assert not aircraft.is_full()
+
+    aircraft.board(pax1)
+    aircraft.board(pax2)
+
+    # after boarding
+    assert aircraft.is_full()
+
+
+def test_aircraft_deplane() -> None:
+
+    aircraft = Aircraft(2)
+
+    assert aircraft.is_empty()
+
+    dp_pax = aircraft.deplane()
+
+    assert dp_pax is None
+
+    pax1 = TEST_PASSENGERS[0]
+    pax2 = TEST_PASSENGERS[1]
+
+    aircraft.board(pax1)
+    aircraft.board(pax2)
+
+    assert aircraft.is_full()
+
+    pax_count = aircraft._current_pax
+    dp_pax = aircraft.deplane()
+
+    assert aircraft._current_pax == pax_count - 1
+    assert dp_pax == TEST_PASSENGERS[1]
+
+    pax_count = aircraft._current_pax
+    dp_pax = aircraft.deplane()
+
+    assert aircraft._current_pax == pax_count - 1
+    assert dp_pax == TEST_PASSENGERS[0]
+
+
+def test_aircraft_disembark() -> None:
+    aircraft = Aircraft(2)
+
+    pax1 = TEST_PASSENGERS[0]
+    pax2 = TEST_PASSENGERS[1]
+
+    aircraft.board(pax1)
+    aircraft.board(pax2)
+
+    # before disembark
+    assert not aircraft.is_empty()
+
+    aircraft.disembark()
+
+    # after disembark
+    assert aircraft.is_empty()
+
+
+def test_aircraft_board() -> None:
+    aircraft = Aircraft(2)
+
+    pax1 = TEST_PASSENGERS[0]
+    pax2 = TEST_PASSENGERS[1]
+    pax3 = TEST_PASSENGERS[2]
+
+    # before board
+    assert aircraft.is_empty()
+
+    pax_count = aircraft._current_pax
+    result = aircraft.board(pax1)
+
+    # after board
+    assert not aircraft.is_empty()
+    assert aircraft._current_pax == pax_count + 1
+    assert aircraft._pax_with_carry_on.peek() == pax1
+    assert result is None
+
+    pax_count = aircraft._current_pax
+    result = aircraft.board(pax2)
+
+    # after 2nd board
+    assert aircraft.is_full()
+    assert aircraft._current_pax == pax_count + 1
+    assert aircraft._pax_without_carry_on.peek() == pax2
+    assert result is None
+
+    pax_count = aircraft._current_pax
+    result = aircraft.board(pax3)
+
+    assert aircraft.is_full()
+    assert aircraft._current_pax == pax_count
+    assert result is False
+
+
 def test_aircraft() -> None:
     """
     Tests the functionalities of the Aircraft class
 
     @return:        None
     """
-    pass
+    test_aircraft_is_empty()
+    test_aircraft_is_full()
+    test_aircraft_deplane()
+    test_aircraft_board()
+    test_aircraft_disembark()
+
+
+def test_passenger_get_zone() -> None:
+    pax = TEST_PASSENGERS[0]
+    zone = pax.get_zone()
+
+    assert zone == 1
 
 
 def test_passenger() -> None:
@@ -420,7 +597,7 @@ def test_passenger() -> None:
 
     @return:        None
     """
-    pass
+    test_passenger_get_zone()
 
 
 def test_gate() -> None:
@@ -461,6 +638,15 @@ def main() -> None:
 
         # test the zone class
         test_zone()
+
+        # test the PaxQueue class
+        test_pax_queue()
+
+        # test the passenger class
+        test_passenger()
+
+        # test the Aircraft class
+        test_aircraft()
 
         # test the gate class
         test_gate()
