@@ -228,6 +228,66 @@ def test_pax_stack() -> None:
     test_pax_stack_peek()
 
 
+def test_pax_queue_enqueue() -> None:
+    """
+        Test the PaxQueue.enqueue method.
+
+        @return:        None
+    """
+    queue = PaxQueue()
+    pax1 = TEST_PASSENGERS[0]
+    pax2 = TEST_PASSENGERS[1]
+
+    # before enqueue
+    assert queue.is_empty()
+
+    queue.enqueue(pax1)
+
+    # after enqueue
+    assert not queue.is_empty()
+    assert queue._front == queue._back == pax1
+
+    queue.enqueue(pax2)
+
+    # after 2nd enqueue
+    assert not queue.is_empty()
+    assert queue._back == pax2
+    assert queue._front == pax1
+
+
+def test_pax_queue_dequeue() -> None:
+    """
+            Test the PaxQueue.enqueue method.
+
+            @return:        None
+    """
+    queue = PaxQueue()
+    pax1 = TEST_PASSENGERS[0]
+    pax2 = TEST_PASSENGERS[1]
+
+    assert queue.is_empty()
+
+    queue.enqueue(pax1)
+    queue.enqueue(pax2)
+
+    # before dequeue
+    assert not queue.is_empty()
+
+    dq_pax = queue.dequeue()
+
+    # after dequeue
+    assert dq_pax == pax1
+    assert queue._front == pax2
+
+    dq_pax = queue.dequeue()
+
+    # after 2nd dequeue
+    assert dq_pax == pax2
+    assert queue._front is None
+    assert queue._back is None
+    assert queue.is_empty()
+
+
 def test_pax_queue() -> None:
     """
     Tests the functionalities of the PaxQueue class
@@ -235,9 +295,8 @@ def test_pax_queue() -> None:
     @return:        None
     """
     test_pax_queue_is_empty()
-    # TODO: implement these
-    # test_pax_queue_enqueue()
-    # test_pax_queue_dequeue()
+    test_pax_queue_enqueue()
+    test_pax_queue_dequeue()
 
 
 def test_zone() -> None:
