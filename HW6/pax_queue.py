@@ -1,3 +1,14 @@
+"""
+Filename:       pax_queue.py
+Description:    Assignment for Lab 6 of CSCI 603
+
+                This module contains the implementation of the queue data
+                structure for storing passenger objects.
+
+Language:       Python 3
+Author:         Arjun Kozhissery    (ak8913@rit.edu)
+                Kushal Kale         (ksk7657@rit.edu)
+"""
 from linked_node import LinkedNode
 from passenger import Passenger
 
