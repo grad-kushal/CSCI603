@@ -82,12 +82,12 @@ class HashMap(Iterable):
             return False
         return True
 
-    def _expand_hash_table(self):
+    def _resize_hash_table(self, capacity):
         """
         Doubles the capacity of the hash table and re-hashes all elements
         @return:
         """
-        new_capacity = 2 * self.capacity
+        new_capacity = capacity
         new_hash_table = [None] * new_capacity
         for key, value in self:
             bucket = self.hash_function(key) % new_capacity
@@ -129,7 +129,7 @@ class HashMap(Iterable):
         self.load = (self.size * 100) / self.capacity
 
         if self.load > self.load_limit:
-            self._expand_hash_table()
+            self._resize_hash_table(self.capacity * 2)
 
     def get(self, key: Hashable) -> Optional[Any]:
         """
@@ -169,6 +169,11 @@ class HashMap(Iterable):
                     current_node.link = next_node.link
                     break
                 current_node = next_node
+
+            self.load = (self.size * 100) / self.capacity
+
+            if self.load < 1 - self.load_limit:
+                self._resize_hash_table(self.capacity / 2)
 
             return None
 
