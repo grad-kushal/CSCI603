@@ -151,6 +151,26 @@ class HashMap(Iterable):
         @param key:         key of the entry to be removed
         @return: 
         """
+        bucket = self.hash_function(key) % self.capacity
+
+        # no entry in the bucket
+        if self.table[bucket] is None:
+            return None
+        else:
+            current_node = self.table[bucket]
+
+            # check if key is in the first node
+            if current_node.key == key:
+                self.table[bucket] = current_node.link
+
+            while current_node is not None:
+                new_node = current_node.link
+                if new_node.key == key:
+                    current_node.link = new_node.link
+                    break
+                current_node = new_node
+
+            return None
 
     def __iter__(self):
         """Implementation of iter method for HashMap iterable"""
@@ -163,4 +183,18 @@ class HashMap(Iterable):
                     current_node = current_node.link
             i += 1
 
+    def imbalance(self):
+        """
+        Returns the imbalalnce factor of the hash table
 
+        @return:        imbalance factor
+        """
+        num_of_chains = 0
+        sum = 0
+        for chain in self.table:
+            if chain is not None:
+                num_of_chains += 1
+                while chain is not None:
+                    sum += 1
+                    chain = chain.link
+        return (sum / num_of_chains) - 1
