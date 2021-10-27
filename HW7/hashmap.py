@@ -89,12 +89,12 @@ class HashMap(Iterable):
         """
         new_capacity = 2 * self.capacity
         new_hash_table = [None] * new_capacity
-        for node in self:
-            bucket = self.hash_function(node.key) % new_capacity
+        for key, value in self:
+            bucket = self.hash_function(key) % new_capacity
 
             # prepend to the chain in the bucket
-            new_hash_table[bucket] = ChainNode(node.key,
-                                               node.value,
+            new_hash_table[bucket] = ChainNode(key,
+                                               value,
                                                new_hash_table[bucket])
 
         self.table = new_hash_table
@@ -131,7 +131,7 @@ class HashMap(Iterable):
         if self.load > self.load_limit:
             self._expand_hash_table()
 
-    def get(self, key: Hashable):
+    def get(self, key: Hashable) -> Optional[Any]:
         """
         Return the value associated to the given key.
 
@@ -144,7 +144,7 @@ class HashMap(Iterable):
             return None
         return node.value
 
-    def remove(self, key: Hashable):
+    def remove(self, key: Hashable) -> None:
         """
         Remove an entry from the hash table.
 
@@ -163,29 +163,18 @@ class HashMap(Iterable):
             if current_node.key == key:
                 self.table[bucket] = current_node.link
 
-            while current_node is not None:
-                new_node = current_node.link
-                if new_node.key == key:
-                    current_node.link = new_node.link
+            while current_node.link is not None:
+                next_node = current_node.link
+                if next_node.key == key:
+                    current_node.link = next_node.link
                     break
-                current_node = new_node
+                current_node = next_node
 
             return None
 
-    def __iter__(self):
-        """Implementation of iter method for HashMap iterable"""
-        i = 0
-        while i < self.capacity:
-            if self.table[i]:
-                current_node = self.table[i]
-                while current_node:
-                    yield current_node
-                    current_node = current_node.link
-            i += 1
-
     def imbalance(self):
         """
-        Returns the imbalalnce factor of the hash table
+        Returns the imbalance factor of the hash table
 
         @return:        imbalance factor
         """
@@ -198,3 +187,14 @@ class HashMap(Iterable):
                     sum += 1
                     chain = chain.link
         return (sum / num_of_chains) - 1
+
+    def __iter__(self):
+        """Implementation of iter method for HashMap iterable"""
+        i = 0
+        while i < self.capacity:
+            if self.table[i]:
+                current_node = self.table[i]
+                while current_node:
+                    yield current_node.key, current_node.value
+                    current_node = current_node.link
+            i += 1
