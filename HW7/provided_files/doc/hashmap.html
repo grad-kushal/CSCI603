@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module hashmap</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>hashmap</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Cmjc%5Cpycharmprojects%5Cchainedhashing%5Csource%5Chashmap.py">pycharmprojects\chainedhashing\source\hashmap.py</a></font></td></tr></table>
+    <p><tt>file:&nbsp;hashmap.py<br>
+language:&nbsp;python3<br>
+description:&nbsp;A&nbsp;homemade&nbsp;hash&nbsp;map&nbsp;that&nbsp;uses&nbsp;chaining&nbsp;for&nbsp;handling&nbsp;collisions</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="hashmap.html#ChainNode">ChainNode</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="collections.abc.html#Iterable">collections.abc.Iterable</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="hashmap.html#HashMap">HashMap</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ChainNode">class <strong>ChainNode</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#ChainNode">ChainNode</a>(key:&nbsp;Any,&nbsp;value:&nbsp;Any,&nbsp;link:&nbsp;'<a href="#ChainNode">ChainNode</a>'&nbsp;=&nbsp;None)&nbsp;-&amp;gt;&nbsp;None<br>
+&nbsp;<br>
+A&nbsp;node&nbsp;to&nbsp;hold&nbsp;(key-value)&nbsp;pair&nbsp;of&nbsp;objects&nbsp;stored&nbsp;in&nbsp;a&nbsp;Chained&nbsp;Hash&nbsp;Map<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="ChainNode-__init__"><strong>__init__</strong></a>(self, key: Any, value: Any, link: 'ChainNode' = None) -&gt; None</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>key</strong></dt>
+</dl>
+<dl><dt><strong>link</strong></dt>
+</dl>
+<dl><dt><strong>value</strong></dt>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="HashMap">class <strong>HashMap</strong></a>(<a href="collections.abc.html#Iterable">collections.abc.Iterable</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#HashMap">HashMap</a>(hash_func:&nbsp;Callable[[Hashable],&nbsp;int]&nbsp;=&nbsp;&amp;lt;built-in&nbsp;function&nbsp;hash&amp;gt;,&nbsp;initial_num_buckets:&nbsp;int&nbsp;=&nbsp;100,&nbsp;load_limit:&nbsp;float&nbsp;=&nbsp;0.75)&nbsp;-&amp;gt;&nbsp;None<br>
+&nbsp;<br>
+A&nbsp;chained&nbsp;hash&nbsp;table&nbsp;that&nbsp;automatically&nbsp;expands&nbsp;and&nbsp;contracts&nbsp;(by&nbsp;a&nbsp;factor&nbsp;of&nbsp;2)<br>
+Terminology:<br>
+&nbsp;&nbsp;number_of_buckets:&nbsp;the&nbsp;number&nbsp;of&nbsp;buckets/entries/chains&nbsp;in&nbsp;the&nbsp;hash<br>
+&nbsp;&nbsp;&nbsp;&nbsp;table.&nbsp;It&nbsp;determines&nbsp;the&nbsp;range&nbsp;of&nbsp;legal&nbsp;table&nbsp;indices&nbsp;in&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;implementation.&nbsp;It&nbsp;changes&nbsp;during&nbsp;resizing.<br>
+&nbsp;&nbsp;size:&nbsp;the&nbsp;number&nbsp;of&nbsp;elements&nbsp;the&nbsp;client&nbsp;has&nbsp;added,&nbsp;and&nbsp;not&nbsp;yet<br>
+&nbsp;&nbsp;&nbsp;&nbsp;removed,&nbsp;from&nbsp;the&nbsp;table<br>
+&nbsp;&nbsp;load_factor:&nbsp;ratio&nbsp;of&nbsp;size&nbsp;to&nbsp;number_of_buckets<br>
+&nbsp;&nbsp;load_limit:&nbsp;specifies&nbsp;a&nbsp;range&nbsp;outside&nbsp;of&nbsp;which&nbsp;the&nbsp;table&nbsp;is&nbsp;too<br>
+&nbsp;&nbsp;&nbsp;&nbsp;full&nbsp;or&nbsp;empty.&nbsp;When&nbsp;load_factor&nbsp;reaches&nbsp;load_limit,&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;number_of_buckets&nbsp;is&nbsp;doubled.&nbsp;When&nbsp;it&nbsp;gets&nbsp;under&nbsp;(1-load_limit),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;number_of_buckets&nbsp;is&nbsp;cut&nbsp;in&nbsp;half.<br>
+Notes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;No&nbsp;hash&nbsp;table&nbsp;with&nbsp;a&nbsp;number&nbsp;of&nbsp;buckets&nbsp;less&nbsp;than&nbsp;MIN_BUCKETS<br>
+&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;ever&nbsp;created,&nbsp;regardless&nbsp;of&nbsp;other&nbsp;parts&nbsp;of&nbsp;this&nbsp;specification.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="hashmap.html#HashMap">HashMap</a></dd>
+<dd><a href="collections.abc.html#Iterable">collections.abc.Iterable</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="HashMap-__init__"><strong>__init__</strong></a>(self, hash_func: Callable[[Hashable], int] = &lt;built-in function hash&gt;, initial_num_buckets: int = 100, load_limit: float = 0.75) -&gt; None</dt><dd><tt>Create&nbsp;a&nbsp;new&nbsp;empty&nbsp;hash&nbsp;table.<br>
+:param&nbsp;initial_num_buckets:&nbsp;starting&nbsp;number_of_buckets<br>
+:param&nbsp;load_limit:&nbsp;See&nbsp;class&nbsp;documentation&nbsp;above.<br>
+:param&nbsp;hash_func:&nbsp;the&nbsp;hash&nbsp;function&nbsp;used&nbsp;to&nbsp;compute&nbsp;the&nbsp;entry's&nbsp;location&nbsp;into&nbsp;the&nbsp;hash&nbsp;table<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="HashMap-__iter__"><strong>__iter__</strong></a>(self) -&gt; Iterator[Tuple[Hashable, Any]]</dt><dd><tt>Build&nbsp;an&nbsp;iterator.<br>
+:return:&nbsp;an&nbsp;iterator&nbsp;for&nbsp;the&nbsp;current&nbsp;entries&nbsp;in&nbsp;the&nbsp;map</tt></dd></dl>
+
+<dl><dt><a name="HashMap-add"><strong>add</strong></a>(self, key: Hashable, value: Any) -&gt; None</dt><dd><tt>Insert&nbsp;a&nbsp;new&nbsp;entry&nbsp;into&nbsp;the&nbsp;hash&nbsp;table.&nbsp;However,&nbsp;if&nbsp;the&nbsp;key<br>
+already&nbsp;exists,&nbsp;the&nbsp;value&nbsp;associated&nbsp;to&nbsp;that&nbsp;key&nbsp;is&nbsp;updated&nbsp;with&nbsp;the&nbsp;given&nbsp;value.<br>
+Double&nbsp;the&nbsp;size&nbsp;of&nbsp;the&nbsp;table&nbsp;if&nbsp;its&nbsp;load_factor&nbsp;exceeds&nbsp;the&nbsp;load_limit.<br>
+:param&nbsp;key:&nbsp;the&nbsp;key&nbsp;to&nbsp;add<br>
+:param&nbsp;value:&nbsp;the&nbsp;value&nbsp;to&nbsp;add<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="HashMap-contains"><strong>contains</strong></a>(self, key: Hashable) -&gt; bool</dt><dd><tt>Is&nbsp;the&nbsp;given&nbsp;key&nbsp;in&nbsp;the&nbsp;hash&nbsp;table?<br>
+:return:&nbsp;True&nbsp;iff&nbsp;key&nbsp;or&nbsp;its&nbsp;equivalent&nbsp;has&nbsp;been&nbsp;added&nbsp;to&nbsp;this&nbsp;table</tt></dd></dl>
+
+<dl><dt><a name="HashMap-get"><strong>get</strong></a>(self, key: Hashable) -&gt; Any</dt><dd><tt>Return&nbsp;the&nbsp;value&nbsp;associated&nbsp;to&nbsp;the&nbsp;given&nbsp;key.<br>
+:return&nbsp;The&nbsp;value&nbsp;associated&nbsp;to&nbsp;the&nbsp;given&nbsp;key&nbsp;or&nbsp;None&nbsp;if&nbsp;key&nbsp;is&nbsp;not&nbsp;found</tt></dd></dl>
+
+<dl><dt><a name="HashMap-imbalance"><strong>imbalance</strong></a>(self) -&gt; float</dt><dd><tt>Computes&nbsp;the&nbsp;imbalance&nbsp;of&nbsp;the&nbsp;hashtable.<br>
+:return:&nbsp;the&nbsp;average&nbsp;length&nbsp;of&nbsp;all&nbsp;non-empty&nbsp;chains&nbsp;minus&nbsp;1,&nbsp;or&nbsp;0&nbsp;if&nbsp;hash&nbsp;table&nbsp;is&nbsp;empty</tt></dd></dl>
+
+<dl><dt><a name="HashMap-remove"><strong>remove</strong></a>(self, key: Hashable) -&gt; None</dt><dd><tt>Remove&nbsp;an&nbsp;<a href="builtins.html#object">object</a>&nbsp;from&nbsp;the&nbsp;hash&nbsp;table.<br>
+Resize&nbsp;the&nbsp;table&nbsp;if&nbsp;its&nbsp;size&nbsp;has&nbsp;dropped&nbsp;below<br>
+(1-load_factor)*current_size.<br>
+:param&nbsp;key:&nbsp;the&nbsp;key&nbsp;to&nbsp;remove;&nbsp;assumes&nbsp;hashing&nbsp;and&nbsp;equality&nbsp;work<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>hash_function</strong></dt>
+</dl>
+<dl><dt><strong>load_limit</strong></dt>
+</dl>
+<dl><dt><strong>size</strong></dt>
+</dl>
+<dl><dt><strong>table</strong></dt>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>MIN_BUCKETS</strong> = 10</dl>
+
+<dl><dt><strong>__abstractmethods__</strong> = frozenset()</dl>
+
+<hr>
+Class methods inherited from <a href="collections.abc.html#Iterable">collections.abc.Iterable</a>:<br>
+<dl><dt><a name="HashMap-__class_getitem__"><strong>__class_getitem__</strong></a> = GenericAlias(...)<font color="#909090"><font face="helvetica, arial"> from <a href="abc.html#ABCMeta">abc.ABCMeta</a></font></font></dt><dd><tt>Represent&nbsp;a&nbsp;<a href="http://www.python.org/dev/peps/pep-0585/">PEP&nbsp;585</a>&nbsp;generic&nbsp;type<br>
+&nbsp;<br>
+E.g.&nbsp;for&nbsp;t&nbsp;=&nbsp;list[int],&nbsp;t.origin&nbsp;is&nbsp;list&nbsp;and&nbsp;t.args&nbsp;is&nbsp;(int,).</tt></dd></dl>
+
+<dl><dt><a name="HashMap-__subclasshook__"><strong>__subclasshook__</strong></a>(C)<font color="#909090"><font face="helvetica, arial"> from <a href="abc.html#ABCMeta">abc.ABCMeta</a></font></font></dt><dd><tt>Abstract&nbsp;classes&nbsp;can&nbsp;override&nbsp;this&nbsp;to&nbsp;customize&nbsp;issubclass().<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;invoked&nbsp;early&nbsp;on&nbsp;by&nbsp;abc.ABCMeta.__subclasscheck__().<br>
+It&nbsp;should&nbsp;return&nbsp;True,&nbsp;False&nbsp;or&nbsp;NotImplemented.&nbsp;&nbsp;If&nbsp;it&nbsp;returns<br>
+NotImplemented,&nbsp;the&nbsp;normal&nbsp;algorithm&nbsp;is&nbsp;used.&nbsp;&nbsp;Otherwise,&nbsp;it<br>
+overrides&nbsp;the&nbsp;normal&nbsp;algorithm&nbsp;(and&nbsp;the&nbsp;outcome&nbsp;is&nbsp;cached).</tt></dd></dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>Any</strong> = typing.Any<br>
+<strong>Callable</strong> = typing.Callable<br>
+<strong>Hashable</strong> = typing.Hashable<br>
+<strong>Iterator</strong> = typing.Iterator<br>
+<strong>Tuple</strong> = typing.Tuple</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#7799ee">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Author</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#7799ee"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">CS&nbsp;RIT</td></tr></table>
+</body></html>
