@@ -10,8 +10,10 @@ Author:         Arjun Kozhissery    (ak8913@rit.edu)
 """
 
 from chain_node import ChainNode
-from typing import Any, Callable, Hashable, Optional, List
+from typing import Any, Callable, Hashable, Optional
 from collections.abc import Iterable
+
+MIN_BUCKETS = 10
 
 
 class HashMap(Iterable):
@@ -23,9 +25,9 @@ class HashMap(Iterable):
                 "capacity"
 
     def __init__(self,
+                 hash_func: Callable[[Hashable], int] = hash,
                  initial_num_buckets: int = 100,
-                 load_limit: float = 75.0,
-                 hash_func: Callable[[Hashable], int] = hash):
+                 load_limit: float = 0.75):
         """
         A constructor for this object.
 
@@ -35,6 +37,14 @@ class HashMap(Iterable):
                                         the hash table should be expanded
         @param hash_func:
         """
+
+        if initial_num_buckets < MIN_BUCKETS:
+            print("Error: Creating a table with %d buckets is not possible." %
+                  initial_num_buckets)
+            print("Creating a hash table with %d buckets instead." %
+                  MIN_BUCKETS)
+            initial_num_buckets = MIN_BUCKETS
+
         self.capacity = initial_num_buckets
         self.load_limit = load_limit
         self.hash_function = hash_func
@@ -82,7 +92,7 @@ class HashMap(Iterable):
             return False
         return True
 
-    def _resize_hash_table(self, capacity):
+    def _resize_hash_table(self, capacity: int) -> None:
         """
         Doubles the capacity of the hash table and re-hashes all elements
         @return:
@@ -125,11 +135,11 @@ class HashMap(Iterable):
             key_node = self._get_node_of(key)
             key_node.value = value
 
-        # update current load
-        self.load = (self.size * 100) / self.capacity
-
-        if self.load > self.load_limit:
-            self._resize_hash_table(self.capacity * 2)
+        # # update current load
+        # self.load = self.size / self.capacity
+        #
+        # if self.load > self.load_limit:
+        #     self._resize_hash_table(self.capacity * 2)
 
     def get(self, key: Hashable) -> Optional[Any]:
         """
@@ -162,18 +172,20 @@ class HashMap(Iterable):
             # check if key is in the first node
             if current_node.key == key:
                 self.table[bucket] = current_node.link
+                self.size -= 1
 
             while current_node.link is not None:
                 next_node = current_node.link
                 if next_node.key == key:
                     current_node.link = next_node.link
+                    self.size -= 1
                     break
                 current_node = next_node
 
-            self.load = (self.size * 100) / self.capacity
-
-            if self.load < 1 - self.load_limit:
-                self._resize_hash_table(self.capacity / 2)
+            # self.load = self.size / self.capacity
+            #
+            # if self.load < 1 - self.load_limit:
+            #     self._resize_hash_table(int(self.capacity / 2))
 
             return None
 
