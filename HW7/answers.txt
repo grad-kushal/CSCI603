@@ -1,0 +1,19 @@
+Question 1)
+Answer: When using the original hash function, we obtain the following imbalance values
+
++------+--------------------+--------------------+
+|      |     atotc.txt      |       mb.txt       |
++------+--------------------+--------------------+
+|  100 |             108.93 |              33.05 |
+| 1000 | 10.286447638603697 | 3.5339547270306255 |
++------+--------------------+--------------------+
+
+
+Question 2)
+Answer: When using the improved hash function, we obtain the following imbalance values
++------+-----------+--------------------+
+|      | atotc.txt |       mb.txt       |
++------+-----------+--------------------+
+|  100 |    108.93 |              33.05 |
+| 1000 |     9.993 | 2.5175619834710745 |
++------+-----------+--------------------+
