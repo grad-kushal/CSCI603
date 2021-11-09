@@ -49,7 +49,10 @@ class PreTee:
         Initialize the parser.
         :param srcFile: the source file (string)
         """
-        pass
+        self.srcFile = srcFile
+        self.lineNum = 0
+        self.parseTrees = []
+        self.symTbl = {}
 
     def __parse(self, tokens):
         """
@@ -65,7 +68,39 @@ class PreTee:
             encountered (e.g. not one of the tokens listed above).
         :return:
         """
-        pass
+
+        # base case - when no tokens are left ot process
+        if not tokens:
+            return None
+
+        # get the first token in the list
+        token = tokens[0]
+
+        # remove it from the list
+        del tokens[0]
+
+        # when token is an identifier, return a variable node
+        if token.isidentifier():
+            return variable_node.VariableNode(token, self.symTbl)
+
+        # when token is a number
+        if token.isdigit():
+            return literal_node.LiteralNode(int(token))
+
+        # when token is "="
+        if token == self.ASSIGNMENT_TOKEN:
+            variable = self.__parse(tokens)
+            expression = self.__parse(tokens)
+
+            # add variable to the symbol table
+            self.symTbl[variable.id] = expression.evaluate()
+
+            return assignment_node.AssignmentNode(
+                variable,
+                expression,
+                self.symTbl,
+                self.ASSIGNMENT_TOKEN
+            )
 
     def parse(self):
         """
@@ -76,7 +111,29 @@ class PreTee:
         exceptions that get raised.
         : return None
         """
-        pass
+
+        # read the raw lines from the file
+        with open(self.srcFile) as f:
+            raw_lines = [ line.strip() for line in f.readlines()]
+
+        # build a parse tree corresponding to each line
+        for line in raw_lines:
+
+            self.lineNum += 1
+
+            # skip over comment lines
+            if not line.startswith(self.COMMENT_TOKEN):
+
+                # tokenize the lines
+                tokens = line.split(" ")
+
+                # build a parse tree for this line
+                tree = self.__parse(tokens)
+                if tree is None:
+                    # TODO: should something be done here?
+                    pass
+                else:
+                    self.parseTrees.append(tree)
 
     def emit(self):
         """
@@ -84,7 +141,8 @@ class PreTee:
         is contained as root nodes in parseTree.
         :return None
         """
-        pass
+        for tree in self.parseTrees:
+            print(tree.emit())
 
     def evaluate(self):
         """
