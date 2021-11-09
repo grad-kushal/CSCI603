@@ -114,7 +114,7 @@ class PreTee:
 
         # read the raw lines from the file
         with open(self.srcFile) as f:
-            raw_lines = [ line.strip() for line in f.readlines()]
+            raw_lines = [line.strip() for line in f.readlines()]
 
         # build a parse tree corresponding to each line
         for line in raw_lines:
