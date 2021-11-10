@@ -38,7 +38,6 @@ class LiteralNode:
         :param val: the value (int)
         :return: None
         """
-        assert id.isdigit()
         self.val = val
 
     def emit(self):
