@@ -31,6 +31,7 @@ if present, is displayed:
     10              # the value of x is printed
 """
 
+
 class PrintNode:
     """
     A PrintNode consists of:
@@ -46,7 +47,7 @@ class PrintNode:
             MathNode)
         :return: None
         """
-        pass
+        self.expression = expression
 
     def emit(self):
         """
@@ -54,7 +55,9 @@ class PrintNode:
             print {expression-emit}
         :return: The infix string (str)
         """
-        pass
+        if self.expression:
+            return 'print ' + self.expression.emit()
+        return 'print'
 
     def evaluate(self):
         """
@@ -62,4 +65,7 @@ class PrintNode:
         it prints the evaluation of the expression in string form.
         :return: None
         """
-        pass
+        if not self.expression:
+            print()
+        else:
+            print(self.expression.evaluate())

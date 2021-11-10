@@ -38,6 +38,9 @@ A runtime exception is raised division by 0 is attempted:
 
 import runtime_error  # runtime_error.RuntimeError
 import pretee  # pretee.PreTee.ADD_TOKEN, ...
+import literal_node
+import variable_node
+import syntax_error
 
 
 class MathNode:
@@ -57,6 +60,13 @@ class MathNode:
         :param token: the character for the math operation (str)
         :return: None
         """
+        if not isinstance(left, (literal_node.LiteralNode,
+                                 MathNode, variable_node.VariableNode)):
+            raise syntax_error.SyntaxError("Bad math operation")
+        if not isinstance(right, (literal_node.LiteralNode, MathNode,
+                                  variable_node.VariableNode)):
+            raise syntax_error.SyntaxError("Bad math operation")
+
         self.left = left
         self.right = right
         self.token = token
@@ -68,11 +78,9 @@ class MathNode:
             '({left-emit} {token} {right-emit})'
         :return:
         """
-        if self is not None:
-            self._inorder(self)
-
-    def _inorder(self):
-        result = "(" + self._inorder(self.left) + str(self.token) + self._inorder(self.right) + ")"
+        result = "(" + self.left.emit() + str(self.token) + self.right.emit() \
+                 + ")"
+        return result
 
     def evaluate(self):
         """
@@ -81,5 +89,15 @@ class MathNode:
             is attempted, with the message, 'Division by zero error'
         :return: The result of performing the math operation (int)
         """
-
-
+        # result = None
+        if self.token == pretee.PreTee.ADD_TOKEN:
+            return self.left.evaluate() + self.right.evaluate()
+        elif self.token == pretee.PreTee.SUBTRACT_TOKEN:
+            return self.left.evaluate() - self.right.evaluate()
+        elif self.token == pretee.PreTee.MULTIPLY_TOKEN:
+            return self.left.evaluate() * self.right.evaluate()
+        else:
+            if self.right.evaluate() != 0:
+                return self.left.evaluate() // self.right.evaluate()
+            else:
+                raise runtime_error.RuntimeError("Division by zero error.")

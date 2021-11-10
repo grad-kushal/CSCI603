@@ -72,7 +72,7 @@ class VariableNode:
             'Unrecognized variable {variable}'
         :return: The value associated with the variable (int)
         """
-        if id not in self.symTbl:
-            raise runtime_error.RuntimeError("Unrecognized variable" + self.id)
+        if self.id not in self.symTbl:
+            raise runtime_error.RuntimeError("Unrecognized variable " + self.id)
         else:
             return self.symTbl[self.id]

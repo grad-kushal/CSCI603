@@ -53,6 +53,7 @@ class PreTee:
         self.lineNum = 0
         self.parseTrees = []
         self.symTbl = {}
+        self.syntaxError = False
 
     def __parse(self, tokens):
         """
@@ -92,15 +93,32 @@ class PreTee:
             variable = self.__parse(tokens)
             expression = self.__parse(tokens)
 
-            # add variable to the symbol table
-            self.symTbl[variable.id] = expression.evaluate()
-
-            return assignment_node.AssignmentNode(
+            # construct a new assignment node
+            new_node = assignment_node.AssignmentNode(
                 variable,
                 expression,
                 self.symTbl,
                 self.ASSIGNMENT_TOKEN
             )
+
+            # add variable to the symbol table
+            self.symTbl[variable.id] = expression.evaluate()
+
+            return new_node
+
+        # when the token is is "@" (print)
+        if token == self.PRINT_TOKEN:
+            expression = self.__parse(tokens)
+            return print_node.PrintNode(expression)
+
+        # when the token is an arithmetic operator
+        if token in self.MATH_TOKENS:
+            left_expression = self.__parse(tokens)
+            right_expression = self.__parse(tokens)
+            return math_node.MathNode(left_expression, right_expression, token)
+
+        # invalid token, add back to the list
+        tokens.append(token)
 
     def parse(self):
         """
@@ -128,12 +146,19 @@ class PreTee:
                 tokens = line.split(" ")
 
                 # build a parse tree for this line
-                tree = self.__parse(tokens)
-                if tree is None:
-                    # TODO: should something be done here?
-                    pass
-                else:
-                    self.parseTrees.append(tree)
+                try:
+                    tree = self.__parse(tokens)
+                    if tree is None or tokens:
+
+                        raise syntax_error.SyntaxError(
+                            "Unexpected token: " + tokens[0]
+                        )
+                    else:
+                        self.parseTrees.append(tree)
+                except syntax_error.SyntaxError as s:
+                    self.syntaxError = True
+                    print("Syntax error at line " + str(self.lineNum) + ": " +
+                          str(s))
 
     def emit(self):
         """
@@ -153,7 +178,9 @@ class PreTee:
             parse tree encounters a runtime error
         :return None
         """
-        pass
+        if not self.syntaxError:
+            for tree in self.parseTrees:
+                tree.evaluate()
 
 
 def main():
