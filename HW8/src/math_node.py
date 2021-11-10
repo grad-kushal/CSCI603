@@ -1,7 +1,8 @@
 """
 CSCI-603 Parser Lab
 Author: RIT CS
-Author: Kushal Kale Arjun Kozhisseri
+Author: Kushal Kale         (ksk7657@rit.edu)
+        Arjun Kozhissery    (ak8913@rit.edu)
 
 A math expression is of the prefix form:
 
@@ -78,8 +79,9 @@ class MathNode:
             '({left-emit} {token} {right-emit})'
         :return:
         """
-        result = "(" + self.left.emit() + str(self.token) + self.right.emit() \
-                 + ")"
+        result = "(" + self.left.emit() + " " \
+                 + str(self.token) + " "\
+                 + self.right.emit() + ")"
         return result
 
     def evaluate(self):
@@ -89,7 +91,6 @@ class MathNode:
             is attempted, with the message, 'Division by zero error'
         :return: The result of performing the math operation (int)
         """
-        # result = None
         if self.token == pretee.PreTee.ADD_TOKEN:
             return self.left.evaluate() + self.right.evaluate()
         elif self.token == pretee.PreTee.SUBTRACT_TOKEN:

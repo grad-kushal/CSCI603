@@ -1,7 +1,8 @@
 """
 CSCI-603 PreTee Lab
 Author: RIT CS
-Author: {YOUR NAMES HERE}
+Author: Kushal Kale         (ksk7657@rit.edu)
+        Arjun Kozhissery    (ak8913@rit.edu)
 
 The main program and class for a prefix expression interpreter of the
 PreTee language.  See prog1.pre for a full example.
@@ -139,8 +140,8 @@ class PreTee:
 
             self.lineNum += 1
 
-            # skip over comment lines
-            if not line.startswith(self.COMMENT_TOKEN):
+            # skip over comment lines and empty lines
+            if line and not line.startswith(self.COMMENT_TOKEN):
 
                 # tokenize the lines
                 tokens = line.split(" ")
@@ -148,10 +149,14 @@ class PreTee:
                 # build a parse tree for this line
                 try:
                     tree = self.__parse(tokens)
+
+                    # invalid statement encountered
                     if tree is None or tokens:
 
+                        invalid_token = tokens[0] if tokens else ''
+
                         raise syntax_error.SyntaxError(
-                            "Unexpected token: " + tokens[0]
+                            "Unexpected token  '" + invalid_token + "'"
                         )
                     else:
                         self.parseTrees.append(tree)

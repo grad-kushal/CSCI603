@@ -1,7 +1,8 @@
 """
 CSCI-603 Parser Lab
 Author: RIT CS
-Author: Kushal Kale Arjun Kozhisseri
+Author: Kushal Kale         (ksk7657@rit.edu)
+        Arjun Kozhissery    (ak8913@rit.edu)
 
 A literal expression is of the prefix form, where {value} is an integer:
 

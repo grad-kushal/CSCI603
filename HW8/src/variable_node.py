@@ -1,7 +1,8 @@
 """
 CSCI-603 Parser Lab
 Author: RIT CS
-Author: Kushal Kale Arjun Kozhisseri
+Author: Kushal Kale         (ksk7657@rit.edu)
+        Arjun Kozhissery    (ak8913@rit.edu)
 
 A variable expression is a legal identifier in Python:
 

@@ -1,7 +1,8 @@
 """
 CSCI-603 Parser Lab
 Author: RIT CS
-Author: {YOUR NAMES HERE}
+Author: Kushal Kale         (ksk7657@rit.edu)
+        Arjun Kozhissery    (ak8913@rit.edu)
 
 A print statement is of the prefix form, where {expression} is optional:
 
