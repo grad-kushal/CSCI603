@@ -1,6 +1,8 @@
 """
 CSCI-603: Graphs
 Author: Sean Strout @ RIT CS
+        Arjun Kozhissery    (ak8913@rit.edu)
+        Kushal Kale         (ksk7657@rit.edu)
 
 An implementation of a vertex as part of a graph.
 
@@ -10,7 +12,6 @@ http://interactivepython.org/runestone/static/pythonds/Graphs/Implementation.htm
 """
 
 import math
-from typing import Union
 
 
 class Vertex:
@@ -69,19 +70,3 @@ class Vertex:
         :return: The weight (int)
         """
         return self.connectedTo[nbr]
-
-    def get_shortest_escape_length(self) -> Union[float, int]:
-        """
-        Get the length of the shortest path from this vertex to the escape.
-
-        @return:        the shortest path from this vertex to the escape
-        """
-        return self.shortest_escape_length
-
-    def get_shortest_escape_length(self, shortest_escape_length) -> None:
-        """
-        Set the length of the shortest path from this vertex to the escape.
-
-        @return:        None
-        """
-        self.shortest_escape_length = shortest_escape_length

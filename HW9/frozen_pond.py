@@ -12,7 +12,6 @@ Author:         Arjun Kozhissery    (ak8913@rit.edu)
 """
 
 from graph import Graph
-from queue import Queue
 from typing import Optional
 from vertex import Vertex
 
@@ -26,7 +25,8 @@ class FrozenPond:
         'width',  # width of the pond
         'escape_row',  # row in which the pond can be escaped
         'pond_raw',  # raw representation of the pond (list of list of str)
-        'pond_graph'  # graph representation of the frozen pond
+        'pond_graph',  # graph representation of the frozen pond
+        'escape_vertex'  # vertex in which escape is possible
     )
 
     def __init__(self, input_file):
@@ -46,24 +46,17 @@ class FrozenPond:
 
         @return:        None
         """
-        # for example, the raw representation should look something like this:
-        # [
-        #   [ '.', '.', '*', '.'],
-        #   [ '.', '.', '.', '*'],
-        #   [ '.', '.', '.', '.'],
-        #   [ '*', '*', '.', '.'],
-        # ]
         pond = []
         try:
-            with open(self.filename) as f:
+            with open(self.input_file) as f:
 
                 lines = f.readlines()
 
                 # extract pond dimensions and escape row
                 dimensions = lines.pop(0).split()
-                self.height = dimensions[0]
-                self.width = dimensions[1]
-                self.escape_row = dimensions[2]
+                self.height = int(dimensions[0])
+                self.width = int(dimensions[1])
+                self.escape_row = int(dimensions[2])
 
                 # Create raw pond representation
                 for line in lines:
@@ -73,7 +66,7 @@ class FrozenPond:
                 self.pond_raw = pond
 
         except FileNotFoundError as _:
-            print("Filename not found %s" % self.filename)
+            print("Filename not found %s" % self.input_file)
             exit(1)
 
     def _find_stopping_coordinates(self, row, column, direction):
@@ -147,6 +140,12 @@ class FrozenPond:
                 # make sure this coordinate is not a rock
                 if self.pond_raw[x][y] != '*':
 
+                    # add the vertex to the graph
+                    vertex = graph.addVertex((x, y))
+
+                    if x == self.escape_row and y == self.width - 1:
+                        self.escape_vertex = vertex
+
                     # get the stopping coordinates along each direction
                     for direction in range(0, 4):
                         stop_x, stop_y = self._find_stopping_coordinates(
@@ -174,7 +173,8 @@ class FrozenPond:
         # queue to enforce a visiting order based on hop distance
         q = [start]
 
-        # dictionary to keep track of visited nodes along with their predecessors
+        # dictionary to keep track of visited nodes
+        # along with their predecessors
         visited = {start: None}
 
         while len(q) > 0:
@@ -211,20 +211,101 @@ class FrozenPond:
         escape_paths = {}
 
         for vertex in vertices:
-            path = self._bfs(vertex, Vertex(self.escape_row, self.width))
+
+            path = self._bfs(self.pond_graph.getVertex(vertex),
+                             self.escape_vertex)
+
             if path is not None:
-                escape_paths[path] = len(path) - 1
+                path_length = len(path)
+                try:
+
+                    # even though the path only contains one vertex,
+                    # we'll still need to do one hop to escape from the
+                    # escape vertex
+                    if self.pond_graph.getVertex(vertex) == \
+                            self.escape_vertex:
+
+                        # to offset the subtraction done in the subsequent step
+                        path_length = path_length + 1
+
+                    escape_paths[path_length - 1].append(vertex)
+                except KeyError:
+                    escape_paths[path_length - 1] = [vertex]
+
             else:
-                escape_paths[vertex] = "∞"
+                try:
+                    escape_paths["No path"].append(vertex)
+                except KeyError:
+                    escape_paths["No path"] = [vertex]
+
+        # retrieve the values in the key 'No path' to be printed in the end
+        no_path_vertices = None
+        if "No path" in escape_paths:
+            no_path_vertices = escape_paths["No path"]
+            del escape_paths["No path"]
+
+        # print the vertices is ascending order or escape path length
+        lengths = escape_paths.keys()
+
+        for length in sorted(lengths):
+            print(length, ":", [(x, y) for (x, y) in escape_paths[length]])
+
+        # print vertices with no path to the escape
+        if no_path_vertices:
+            print("No path : ", no_path_vertices)
 
 
-def main():
-    p = FrozenPond('')
+def run_tests():
+    """
+    Run thr test cases for this program.
 
-    for n in p.pond_graph:
-        print(n)
-    print(p.pond_graph)
-    pass
+    @return:    None
+    """
+
+    from pprint import pprint  # for printing dict
+
+    input_file_format = 'test{}.txt'
+    output_file_format = 'out{}.txt'
+
+    # run the 3 test cases test2.txt to test4.txt
+    for i in range(2, 5):
+
+        print("*" * 50)
+
+        input_file = input_file_format.format(i)
+        print("Running test case in", input_file)
+        output_file = output_file_format.format(i)
+
+        # get the expected result
+        with open(output_file) as o:
+            expected_dict = eval(o.read())
+            print("\nExpected result:")
+            pprint(expected_dict)
+
+        # print the actual result
+        print("\nActual result:")
+        fp = FrozenPond(input_file)
+        fp.print_escape_paths()
+
+        print("*" * 50, '\n')
+
+
+def main() -> None:
+    """
+    Runs the program on the given example and additional test cases.
+
+    @return:    None
+    """
+
+    print("Running program on the given example: test1.txt")
+    fp = FrozenPond('test1.txt')
+
+    # print the escape path
+    fp.print_escape_paths()
+
+    # run additional test cases
+    print('\n\nRunning additional test cases')
+    run_tests()
 
 
 if __name__ == '__main__':

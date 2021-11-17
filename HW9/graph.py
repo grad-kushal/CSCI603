@@ -42,7 +42,7 @@ class Graph:
             self.numVertices += 1
             vertex = Vertex(key)
             self.vertList[key] = vertex
-        return vertex
+        return self.getVertex(key)
 
     def getVertex(self, key):
         """
@@ -99,41 +99,3 @@ class Graph:
         :return: A list iterator over Vertex objects
         """
         return iter(self.vertList.values())
-
-def testGraph():
-    """
-    A test function for the Graph class.
-    :return: None
-    """
-    STATES = {
-        'CT' : ('MA', 'RI'),
-        'MA' : ('CT', 'NH', 'RI', 'VT'),
-        'ME' : ('NH', ),
-        'NH' : ('MA', 'ME', 'VT'),
-        'RI' : ('CT', 'MA'),
-        'VT' : ('MA', 'NH')
-    }
-
-    # add all the edges to the graph
-    northeast = Graph()
-    for state, neighbors in STATES.items():
-        for neighbor in neighbors:
-            # this automatically creates a new vertices if not already present
-            northeast.addEdge(state, neighbor)
-
-    # display the vertices, which will show the connected neighbors.
-    # this will call the __iter__() method to get the Vertex objects.
-    for state in northeast:
-        print(state)
-
-    print(northeast.getVertices())
-
-    # check the __contains__() method
-    print('MA in northeast (True)?', 'MA' in northeast)
-    print('CA in northeast (False)?', 'CA' in northeast)
-
-    # test getVertex()
-    print('MA vertex:', northeast.getVertex('MA'))
-
-if __name__ == '__main__':
-    testGraph()
