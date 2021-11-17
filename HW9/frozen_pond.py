@@ -21,12 +21,12 @@ class FrozenPond:
     """A class that represents a frozen pond"""
 
     __slots__ = (
-        'input_file',   # input file path
-        'height',       # height of the pond
-        'width',        # width of the pond
-        'escape_row',   # row in which the pond can be escaped
-        'pond_raw',     # raw representation of the pond (list of list of str)
-        'pond_graph'    # graph representation of the frozen pond
+        'input_file',  # input file path
+        'height',  # height of the pond
+        'width',  # width of the pond
+        'escape_row',  # row in which the pond can be escaped
+        'pond_raw',  # raw representation of the pond (list of list of str)
+        'pond_graph'  # graph representation of the frozen pond
     )
 
     def __init__(self, input_file):
@@ -53,14 +53,28 @@ class FrozenPond:
         #   [ '.', '.', '.', '.'],
         #   [ '*', '*', '.', '.'],
         # ]
-        # TODO: Delete before push
-        self.height = 5
-        self.width = 5
-        self.escape_row = 1
-        with open('sample-raw.txt') as f:
-            self.pond_raw = eval(f.read())
-        # ============
-        pass
+        pond = []
+        try:
+            with open(self.filename) as f:
+
+                lines = f.readlines()
+
+                # extract pond dimensions and escape row
+                dimensions = lines.pop(0).split()
+                self.height = dimensions[0]
+                self.width = dimensions[1]
+                self.escape_row = dimensions[2]
+
+                # Create raw pond representation
+                for line in lines:
+                    row = line.split()
+                    pond.append(row)
+
+                self.pond_raw = pond
+
+        except FileNotFoundError as _:
+            print("Filename not found %s" % self.filename)
+            exit(1)
 
     def _find_stopping_coordinates(self, row, column, direction):
         """
@@ -146,21 +160,46 @@ class FrozenPond:
 
     def _bfs(self,
              start: Vertex,
-             destination: Vertex,
-             visited: set[str]) -> Optional[list[Vertex]]:
+             destination: Vertex) -> Optional[list[Vertex]]:
         """
         Do a breadth first search to check if there is a path between start
         and destination.
 
         @param start:           start vertex
         @param destination:     destination vertex
-        @param visited:         vertices visited so far
         @return:                list representing the path if a path is
                                 present between the start and destination,
                                 else returns None
         """
-        # standard BFS algo
-        pass
+        # queue to enforce a visiting order based on hop distance
+        q = [start]
+
+        # dictionary to keep track of visited nodes along with their predecessors
+        visited = {start: None}
+
+        while len(q) > 0:
+            current_vertex = q.pop(0)
+
+            # destination vertex found
+            if current_vertex == destination:
+                break
+
+            # add neighboring vertices to the queue
+            for nbr in current_vertex.getConnections():
+                if nbr not in visited:
+                    visited[nbr] = current_vertex
+                    q.append(nbr)
+
+        if destination in visited:
+            shortest_path = []
+            temp = destination
+            while temp != start:
+                shortest_path.insert(0, temp)
+                temp = visited[temp]
+            shortest_path.insert(0, start)
+            return shortest_path
+        else:
+            return None
 
     def print_escape_paths(self) -> None:
         """
@@ -168,20 +207,15 @@ class FrozenPond:
 
         @return:        None
         """
+        vertices = self.pond_graph.getVertices()
+        escape_paths = {}
 
-        #
-        # something like this:
-        # for all vertices in the graph:
-        #   path_nodes = _bfs(start, destination):
-        #   escape_paths = dict()
-        #   if path_nodes:
-        #      path_length = len(path_nodes) - 1
-        #        update in escape_paths dictionary
-        #   else:
-        #       update in escape_paths dictionary under the key 'No path'
-        #
-        #
-        pass
+        for vertex in vertices:
+            path = self._bfs(vertex, Vertex(self.escape_row, self.width))
+            if path is not None:
+                escape_paths[path] = len(path) - 1
+            else:
+                escape_paths[vertex] = "∞"
 
 
 def main():
@@ -195,4 +229,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
