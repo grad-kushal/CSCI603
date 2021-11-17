@@ -35,6 +35,8 @@ class FrozenPond:
         @param input_file:      input file path
         """
         self.input_file = input_file
+        self._process_input_file()
+        self.pond_graph = self._build_graph()
 
     def _process_input_file(self):
         """
@@ -51,6 +53,13 @@ class FrozenPond:
         #   [ '.', '.', '.', '.'],
         #   [ '*', '*', '.', '.'],
         # ]
+        # TODO: Delete before push
+        self.height = 5
+        self.width = 5
+        self.escape_row = 1
+        with open('sample-raw.txt') as f:
+            self.pond_raw = eval(f.read())
+        # ============
         pass
 
     def _find_stopping_coordinates(self, row, column, direction):
@@ -65,12 +74,48 @@ class FrozenPond:
         @param direction:   0 for up, 1 for right, 2 for down, and 3 for left
         @return:            stopping row, stopping column
         """
-        # make use of the raw representation for this traversal
-        # trivial case: when the starting position is on the edge of the pond
-        # or nearby a rock. For instance, starting from  (0, 0), the stopping
-        # coordinate along the left (and up) direction is (0, 0).
-        #
-        pass
+        current_row = row
+        current_column = column
+
+        if direction == 0:
+
+            # find the stopping row
+            for r in range(row - 1, -1, -1):
+                if self.pond_raw[r][current_column] == '*':
+                    break
+                else:
+                    current_row = r
+
+        elif direction == 1:
+
+            # find the stopping column
+            for c in range(column + 1, self.width):
+
+                if self.pond_raw[current_row][c] == '*':
+                    break
+                else:
+                    current_column = c
+
+        elif direction == 2:
+
+            # find the stopping row
+            for r in range(row + 1, self.height):
+
+                if self.pond_raw[r][current_column] == '*':
+                    break
+                else:
+                    current_row = r
+
+        elif direction == 3:
+
+            # find the stopping column
+            for c in range(column - 1, -1, -1):
+                if self.pond_raw[current_row][c] == '*':
+                    break
+                else:
+                    current_column = c
+
+        return current_row, current_column
 
     def _build_graph(self) -> Graph:
         """
@@ -78,8 +123,26 @@ class FrozenPond:
 
         @return:
         """
-        # make use of _find_stopping_coordinates
-        pass
+
+        graph = Graph()
+
+        # build a vertex from each coordinate
+        for x in range(0, self.width):
+            for y in range(0, self.height):
+
+                # make sure this coordinate is not a rock
+                if self.pond_raw[x][y] != '*':
+
+                    # get the stopping coordinates along each direction
+                    for direction in range(0, 4):
+                        stop_x, stop_y = self._find_stopping_coordinates(
+                            x, y, direction
+                        )
+
+                        # if stop coordinates are not the current coordinates
+                        if (stop_x, stop_y) != (x, y):
+                            graph.addEdge((x, y), (stop_x, stop_y))
+        return graph
 
     def _bfs(self,
              start: Vertex,
@@ -122,7 +185,13 @@ class FrozenPond:
 
 
 def main():
+    p = FrozenPond('')
+
+    for n in p.pond_graph:
+        print(n)
+    print(p.pond_graph)
     pass
+
 
 if __name__ == '__main__':
     main()

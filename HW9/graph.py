@@ -11,6 +11,7 @@ http://interactivepython.org/runestone/static/pythonds/Graphs/Implementation.htm
 
 from vertex import Vertex
 
+
 class Graph:
     """
     A graph implemented as an adjacency list of vertices.

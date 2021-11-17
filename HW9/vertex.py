@@ -12,6 +12,7 @@ http://interactivepython.org/runestone/static/pythonds/Graphs/Implementation.htm
 import math
 from typing import Union
 
+
 class Vertex:
     """
     An individual vertex in the graph.
@@ -51,7 +52,8 @@ class Vertex:
 
         :return: The string
         """
-        return str(self.coordinates)
+        return str(self.coordinates) + ' connectedTo: ' \
+               + str([str(x.coordinates) for x in self.connectedTo])
 
     def getConnections(self):
         """
@@ -83,34 +85,3 @@ class Vertex:
         @return:        None
         """
         self.shortest_escape_length = shortest_escape_length
-
-
-def testVertex():
-    """
-    A test function for the Vertex class.
-    :return: None
-    """
-    vertexA = Vertex('A')
-    vertexB = Vertex('B')
-    vertexC = Vertex('C')
-    vertexD = Vertex('D')
-    vertexA.addNeighbor(vertexB, 3)
-    vertexA.addNeighbor(vertexC, 1)
-    vertexB.addNeighbor(vertexA, 4)
-    vertexB.addNeighbor(vertexC, 2)
-    vertexC.addNeighbor(vertexD, 5)
-
-    # test __str__()
-    print(vertexA)
-    print(vertexD)
-
-    # test getWeight()
-    print('A -> B weight (3):', vertexA.getWeight(vertexB))
-    print('C -> D weight (5):', vertexC.getWeight(vertexD))
-
-    # test getConnections():
-    print("B's neighbors ():", [vertex.id for vertex in vertexB.getConnections()])
-    print("D's neighbors ():", list(vertexD.getConnections()))
-
-if __name__ == '__main__':
-    testVertex()
